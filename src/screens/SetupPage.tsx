@@ -19,12 +19,15 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
   const [rounds, setRounds] = useState(settings.rounds.toString());
   const [roundMinutes, setRoundMinutes] = useState(Math.floor(settings.roundDuration / 60).toString());
   const [roundSeconds, setRoundSeconds] = useState((settings.roundDuration % 60).toString());
-  const [restDuration, setRestDuration] = useState((settings.restDuration / 60).toString());
+  const [ restMinutes, setRestMinutes ] = useState( (settings.restDuration / 60).toString() );
+  const [ restSeconds, setRestSeconds ] = useState( (settings.restDuration % 60).toString() );
+  // const [restDuration, setRestDuration] = useState((settings.restDuration / 60).toString());
 
   const handleStartTimer = () => {
     const parsedRounds = parseInt(rounds) || 3;
     const parsedRoundDurationSeconds = getRoundDurationSeconds() || 180; // default 3 minutes
-    const parsedRestDuration = parseInt(restDuration) || 1;
+    // const parsedRestDuration = parseInt(restDuration) || 1;
+    const parsedRestDuration = getRestDurationSeconds() || 60;
 
     updateSettings({
       rounds: Math.max(1, parsedRounds),
@@ -45,6 +48,10 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
     return (parseInt(roundMinutes) || 0) * 60 + (parseInt(roundSeconds) || 0);
   };
 
+  const getRestDurationSeconds = () => {
+    return (parseInt(restMinutes) || 0) * 60 + (parseInt(restSeconds) || 0);
+  };
+
   const setRoundDurationTotal = (totalSeconds: number) => {
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
@@ -52,10 +59,17 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
     setRoundSeconds(secs.toString());
   };
 
+  const setRestDurationTotal = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    setRestMinutes(mins.toString());
+    setRestSeconds(secs.toString());
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Boxing Timer Setup</Text>
+        <Text style={styles.title}>DING DING</Text>
       </View>
 
       <View style={styles.content}>
@@ -111,32 +125,52 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
           </View>
           <Text style={styles.preview}>{formatTime(getRoundDurationSeconds())}</Text>
         </View>
-
         {/* Rest Duration Input */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Rest Duration</Text>
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              keyboardType="number-pad"
-              value={restDuration}
-              onChangeText={setRestDuration}
-              placeholder="1"
-            />
-            <Text style={styles.unit}>minutes</Text>
+           <Picker 
+              selectedValue={restMinutes}
+              style={[styles.input, { height: 50 }]}
+            onValueChange={(itemValue) => {
+              const minutes = parseInt(itemValue as string) || 0;
+                const seconds = parseInt(restSeconds) || 0;
+                setRestDurationTotal(minutes * 60 + seconds);
+            }}
+              >
+              {Array.from({ length: 61 }, (_, i) => i).map((num) => (
+                <Picker.Item key={`rest_${num}`} label={num.toString()} value={num.toString()} />
+              ))}
+            </Picker>
+            <Text style={styles.unit}>Minutes</Text>
+            <Picker 
+              selectedValue={restSeconds}
+              style={[styles.input, { height: 50 }]}
+            onValueChange={(itemValue) => {
+              const minutes = parseInt(itemValue as string) || 0;
+                const seconds = parseInt(restSeconds) || 0;
+                setRestDurationTotal(minutes * 60 + seconds);
+            }}
+              >
+              {Array.from({ length: 59 }, (_, i) => i).map((num) => (
+                <Picker.Item key={`rest_${num}`} label={num.toString()} value={num.toString()} />
+              ))}
+            </Picker>
+            <Text style={styles.unit}>Seconds</Text>
           </View>
-          <Text style={styles.preview}>{formatTime((parseInt(restDuration) || 1) * 60)}</Text>
+          <Text style={styles.preview}>{formatTime(getRestDurationSeconds())}</Text>
         </View>
 
         {/* Summary */}
         <View style={styles.summary}>
-          //TODO: Remove the button styling. this should be a label
-          <Text style={styles.summaryTitle}>Total Duration</Text>
+          {/* TODO: Remove the button styling. this should be a label */}
+          <Text style={styles.summaryTitle}>Total</Text>
           <Text style={styles.summaryValue}>
-            {formatTime(
+            {/* {formatTime(
               (parseInt(rounds) || 3) * getRoundDurationSeconds() +
-                ((parseInt(rounds) || 3) - 1) * (parseInt(restDuration) || 1) * 60
-            )}
+                ((parseInt(rounds) || 3) - 1) * (getRestDurationSeconds() || 1) * 60
+            )} */}
+            {formatTime((parseInt(rounds) || 3) * getRestDurationSeconds() + ((parseInt(rounds) || 3) - 1) * getRestDurationSeconds())}
           </Text>
         </View>
       </View>
