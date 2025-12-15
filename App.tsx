@@ -16,18 +16,18 @@ export default function App() {
           <Stack.Navigator
             screenOptions={{
               headerShown: false,
-              animationEnabled: true,
+              // animationEnabled: true,
             }}
           >
             <Stack.Screen
               name="Setup"
               component={SetupScreenWrapper}
-              options={{ animationTypeForReplace: 'fade' }}
+              // options={{ animationTypeForReplace: 'fade' }}
             />
             <Stack.Screen
               name="Timer"
               component={TimerScreenWrapper}
-              options={{ animationTypeForReplace: 'fade' }}
+              // options={{ animationTypeForReplace: 'fade' }}
             />
           </Stack.Navigator>
         </NavigationContainer>

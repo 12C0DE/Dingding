@@ -83,7 +83,7 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
     if (isRunning) {
       Alert.alert(
         'Stop Training?',
-        'Are you sure you want to go back? Your progress will be lost.',
+        'Are you sure you want to go back? Your timer will reset.',
         [
           {
             text: 'Cancel',
