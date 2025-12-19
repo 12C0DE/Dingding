@@ -146,13 +146,18 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
             <Picker 
               selectedValue={restSeconds}
               style={[styles.input, { height: 50 }]}
+            // onValueChange={(itemValue) => {
+            //   const minutes = parseInt(itemValue as string) || 0;
+            //     const seconds = parseInt(restSeconds) || 0;
+            //     setRestDurationTotal(minutes * 60 + seconds);
+            // }
             onValueChange={(itemValue) => {
-              const minutes = parseInt(itemValue as string) || 0;
-                const seconds = parseInt(restSeconds) || 0;
+                const seconds = parseInt(itemValue as string) || 0;
+                const minutes = parseInt(restMinutes) || 0;
                 setRestDurationTotal(minutes * 60 + seconds);
-            }}
+              }}
               >
-              {Array.from({ length: 59 }, (_, i) => i).map((num) => (
+              {Array.from({ length: 60 }, (_, i) => i).map((num) => (
                 <Picker.Item key={`rest_${num}`} label={num.toString()} value={num.toString()} />
               ))}
             </Picker>
@@ -166,11 +171,8 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
           {/* TODO: Remove the button styling. this should be a label */}
           <Text style={styles.summaryTitle}>Total</Text>
           <Text style={styles.summaryValue}>
-            {/* {formatTime(
-              (parseInt(rounds) || 3) * getRoundDurationSeconds() +
-                ((parseInt(rounds) || 3) - 1) * (getRestDurationSeconds() || 1) * 60
-            )} */}
-            {formatTime((parseInt(rounds) || 3) * getRestDurationSeconds() + ((parseInt(rounds) || 3) - 1) * getRestDurationSeconds())}
+            {formatTime((parseInt(rounds) || 3) * getRoundDurationSeconds() + ((parseInt(rounds) || 3) - 1) * getRestDurationSeconds())}
+            {/* {formatTime(settings.rounds * settings.roundDuration + (settings.rounds - 1) * settings.restDuration)} */}
           </Text>
         </View>
       </View>
@@ -185,10 +187,10 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#1a1a2e',
   },
   header: {
-    backgroundColor: '#3953c9ff',
+    // backgroundColor: '#3953c9ff',
     paddingVertical: 24,
     paddingHorizontal: 16,
     alignItems: 'center',

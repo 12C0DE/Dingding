@@ -120,10 +120,16 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
+{/* Back to Setup */}
+      <View style={styles.headerTopContainer}>
+      <TouchableOpacity onPress={handleBackToSetup}>
+        <Text style={{ fontSize: 16, color: '#007AFF', fontWeight: '600' }}>← Back</Text>
+      </TouchableOpacity>
         <Text style={styles.roundInfo}>
-          Round {currentRound} / {settings.rounds}
+          {settings.rounds} Rounds
         </Text>
-        <Text style={styles.phaseLabel}>{timerState === 'ROUND' ? '🥊 ROUND' : '⏸️  REST'}</Text>
+      </View>
+        <Text style={styles.phaseLabel}>{timerState === 'ROUND' ? `🥊 ROUND ${currentRound}` : '⏸️  REST'}</Text>
       </View>
 
       {/* Timer Display */}
@@ -166,11 +172,6 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
           <Text style={styles.buttonLabel}>↻ Reset</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Back to Setup */}
-      <TouchableOpacity style={styles.backButton} onPress={handleBackToSetup}>
-        <Text style={styles.backButtonText}>← Edit Settings</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -187,11 +188,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
+  headerTopContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    alignItems: 'center',
+    top: 10,
+  },
   roundInfo: {
-    fontSize: 20,
-    color: '#fff',
+    fontSize: 14,
+    color: '#b1b1b1ff',
     fontWeight: '600',
     marginBottom: 8,
+    textAlign: 'right',
+    width: '100%',  
+    marginRight: 24,
+    fontStyle: 'italic',
   },
   phaseLabel: {
     fontSize: 24,
