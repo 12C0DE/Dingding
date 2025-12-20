@@ -211,7 +211,7 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
         </View>
 
         {/* Summary */}
-        <View style={styles.summary}>
+        <View>
           {/* TODO: Remove the button styling. this should be a label */}
           <Text style={styles.summaryTitle}>Total</Text>
           <Text style={styles.summaryValue}>
@@ -239,7 +239,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a1a2e",
   },
   header: {
-    // backgroundColor: '#3953c9ff',
     paddingVertical: 24,
     paddingHorizontal: 16,
     alignItems: "center",
@@ -254,7 +253,6 @@ const styles = StyleSheet.create({
   },
   inputGroup: {
     marginBottom: 24,
-    // backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
   },
