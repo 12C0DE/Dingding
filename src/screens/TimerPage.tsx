@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -6,21 +6,21 @@ import {
   TouchableOpacity,
   Alert,
   Vibration,
-} from 'react-native';
-import { useBoxingTimer } from '../context/BoxingTimerContext';
+} from "react-native";
+import { useBoxingTimer } from "../context/BoxingTimerContext";
 
 interface TimerPageProps {
   onNavigateToSetup: () => void;
 }
 
-type TimerState = 'ROUND' | 'REST';
+type TimerState = "ROUND" | "REST";
 
 export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
   const { settings } = useBoxingTimer();
   const [currentRound, setCurrentRound] = useState(1);
   const [timeLeft, setTimeLeft] = useState(settings.roundDuration);
   const [isRunning, setIsRunning] = useState(false);
-  const [timerState, setTimerState] = useState<TimerState>('ROUND');
+  const [timerState, setTimerState] = useState<TimerState>("ROUND");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Reset timer when settings change
@@ -28,7 +28,7 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
     setCurrentRound(1);
     setTimeLeft(settings.roundDuration);
     setIsRunning(false);
-    setTimerState('ROUND');
+    setTimerState("ROUND");
   }, [settings]);
 
   // Timer logic
@@ -41,21 +41,24 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
           // Time's up for current phase
           Vibration.vibrate(200);
 
-          if (timerState === 'ROUND') {
+          if (timerState === "ROUND") {
             // Check if this was the last round
             if (currentRound >= settings.rounds) {
               // Training complete
               setIsRunning(false);
-              Alert.alert('Training Complete!', 'Great job! You finished all rounds.');
+              Alert.alert(
+                "Training Complete!",
+                "Great job! You finished all rounds."
+              );
               return prev;
             }
             // Move to rest phase
-            setTimerState('REST');
+            setTimerState("REST");
             setCurrentRound((prev) => prev + 1);
             return settings.restDuration;
           } else {
             // Rest phase complete, move to next round
-            setTimerState('ROUND');
+            setTimerState("ROUND");
             return settings.roundDuration;
           }
         }
@@ -76,27 +79,27 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
     setIsRunning(false);
     setCurrentRound(1);
     setTimeLeft(settings.roundDuration);
-    setTimerState('ROUND');
+    setTimerState("ROUND");
   };
 
   const handleBackToSetup = () => {
     if (isRunning) {
       Alert.alert(
-        'Stop Training?',
-        'Are you sure you want to go back? Your timer will reset.',
+        "Stop Training?",
+        "Are you sure you want to go back? Your timer will reset.",
         [
           {
-            text: 'Cancel',
+            text: "Cancel",
             onPress: () => {},
-            style: 'cancel',
+            style: "cancel",
           },
           {
-            text: 'Go Back',
+            text: "Go Back",
             onPress: () => {
               setIsRunning(false);
               onNavigateToSetup();
             },
-            style: 'destructive',
+            style: "destructive",
           },
         ]
       );
@@ -108,11 +111,13 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const progressPercentage =
-    timerState === 'ROUND'
+    timerState === "ROUND"
       ? ((settings.roundDuration - timeLeft) / settings.roundDuration) * 100
       : ((settings.restDuration - timeLeft) / settings.restDuration) * 100;
 
@@ -120,16 +125,18 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-{/* Back to Setup */}
-      <View style={styles.headerTopContainer}>
-      <TouchableOpacity onPress={handleBackToSetup}>
-        <Text style={{ fontSize: 16, color: '#007AFF', fontWeight: '600' }}>← Back</Text>
-      </TouchableOpacity>
-        <Text style={styles.roundInfo}>
-          {settings.rounds} Rounds
+        {/* Back to Setup */}
+        <View style={styles.headerTopContainer}>
+          <TouchableOpacity onPress={handleBackToSetup}>
+            <Text style={{ fontSize: 16, color: "#007AFF", fontWeight: "600" }}>
+              ← Back
+            </Text>
+          </TouchableOpacity>
+          <Text style={styles.roundInfo}>{settings.rounds} Rounds</Text>
+        </View>
+        <Text style={styles.phaseLabel}>
+          {timerState === "ROUND" ? `🥊 ROUND ${currentRound}` : "⏸️  REST"}
         </Text>
-      </View>
-        <Text style={styles.phaseLabel}>{timerState === 'ROUND' ? `🥊 ROUND ${currentRound}` : '⏸️  REST'}</Text>
       </View>
 
       {/* Timer Display */}
@@ -137,7 +144,7 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
         <View
           style={[
             styles.timerCircle,
-            { backgroundColor: timerState === 'ROUND' ? '#FF6B6B' : '#4ECDC4' },
+            { backgroundColor: timerState === "ROUND" ? "#FF6B6B" : "#4ECDC4" },
           ]}
         >
           <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
@@ -152,7 +159,7 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
               styles.progressFill,
               {
                 width: `${progressPercentage}%`,
-                backgroundColor: timerState === 'ROUND' ? '#FF6B6B' : '#4ECDC4',
+                backgroundColor: timerState === "ROUND" ? "#FF6B6B" : "#4ECDC4",
               },
             ]}
           />
@@ -165,10 +172,15 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
           style={[styles.controlButton, styles.pauseButton]}
           onPress={handlePlayPause}
         >
-          <Text style={styles.buttonLabel}>{isRunning ? '⏸ Pause' : '▶ Start'}</Text>
+          <Text style={styles.buttonLabel}>
+            {isRunning ? "⏸ Pause" : "▶ Start"}
+          </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.controlButton, styles.resetButton]} onPress={handleReset}>
+        <TouchableOpacity
+          style={[styles.controlButton, styles.resetButton]}
+          onPress={handleReset}
+        >
           <Text style={styles.buttonLabel}>↻ Reset</Text>
         </TouchableOpacity>
       </View>
@@ -179,50 +191,50 @@ export const TimerPage: React.FC<TimerPageProps> = ({ onNavigateToSetup }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    backgroundColor: "#1a1a2e",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 40,
   },
   header: {
-    alignItems: 'center',
-    width: '100%',
+    alignItems: "center",
+    width: "100%",
   },
   headerTopContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    alignItems: "center",
     top: 10,
   },
   roundInfo: {
     fontSize: 14,
-    color: '#b1b1b1ff',
-    fontWeight: '600',
+    color: "#b1b1b1ff",
+    fontWeight: "600",
     marginBottom: 8,
-    textAlign: 'right',
-    width: '100%',  
+    textAlign: "right",
+    width: "100%",
     marginRight: 24,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
   phaseLabel: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: "bold",
+    color: "#fff",
   },
   timerSection: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginVertical: 40,
   },
   timerCircle: {
     width: 280,
     height: 280,
     borderRadius: 140,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 20,
@@ -230,27 +242,27 @@ const styles = StyleSheet.create({
   },
   timerText: {
     fontSize: 80,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: "bold",
+    color: "#fff",
   },
   progressContainer: {
-    width: '80%',
+    width: "80%",
     marginVertical: 20,
   },
   progressBar: {
     height: 8,
-    backgroundColor: '#333',
+    backgroundColor: "#333",
     borderRadius: 4,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   progressFill: {
-    height: '100%',
+    height: "100%",
     borderRadius: 4,
   },
   controls: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
     paddingHorizontal: 20,
     marginVertical: 20,
   },
@@ -259,28 +271,28 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     minWidth: 120,
-    alignItems: 'center',
+    alignItems: "center",
   },
   pauseButton: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: "#FF6B6B",
   },
   resetButton: {
-    backgroundColor: '#FFA500',
+    backgroundColor: "#FFA500",
   },
   buttonLabel: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   backButton: {
-    backgroundColor: '#3953c9ff',
+    backgroundColor: "#3953c9ff",
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 24,
   },
   backButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

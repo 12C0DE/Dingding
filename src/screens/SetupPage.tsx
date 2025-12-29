@@ -8,7 +8,8 @@ import {
   TextInput,
 } from "react-native";
 import { useBoxingTimer } from "../context/BoxingTimerContext";
-import { Picker } from "@react-native-picker/picker";
+// import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from "react-native-dropdown-picker";
 
 interface SetupPageProps {
   onNavigateToTimer: () => void;
@@ -29,6 +30,13 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
   const [restSeconds, setRestSeconds] = useState(
     (settings.restDuration % 60).toString()
   );
+  const [open, setOpen] = useState({
+    rounds: false,
+    roundMinutes: false,
+    roundSeconds: false,
+    restMinutes: false,
+    restSeconds: false,
+  });
   const getRoundDurationSeconds = () => {
     return (parseInt(roundMinutes) || 0) * 60 + (parseInt(roundSeconds) || 0);
   };
@@ -87,7 +95,8 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    // <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>DING DING</Text>
       </View>
@@ -98,138 +107,154 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
           <View style={styles.labelContainer}>
             <Text style={styles.label}>Rounds</Text>
             <View style={styles.inputContainer}>
-              <Picker
-                selectedValue={rounds}
-                style={[styles.input, { height: 50 }]}
-                onValueChange={(itemValue) => setRounds(itemValue)}
-              >
-                {Array.from({ length: 25 }, (_, i) => i + 1).map((num) => (
-                  <Picker.Item
-                    key={num}
-                    label={num.toString()}
-                    value={num.toString()}
-                  />
-                ))}
-              </Picker>
+              <DropDownPicker
+                open={open.rounds}
+                setOpen={() => setOpen({ ...open, rounds: !open.rounds })}
+                value={rounds}
+                setValue={(itemValue) => setRounds(itemValue)}
+                items={Array.from({ length: 25 }, (_, i) => i + 1).map(
+                  (num) => ({
+                    label: num.toString(),
+                    value: num.toString(),
+                  })
+                )}
+                style={styles.input}
+              />
             </View>
           </View>
-        </View>
 
-        {/* Round Duration Input */}
-        <View style={styles.inputGroup}>
-          <View style={styles.labelContainer}>
-            <Text style={styles.label}>Duration</Text>
-            <View style={styles.inputContainer}>
-              <Picker
-                selectedValue={roundMinutes}
-                style={[styles.input, { height: 50 }]}
-                onValueChange={(itemValue) => {
-                  const minutes = parseInt(itemValue as string) || 0;
-                  const seconds = parseInt(roundSeconds) || 0;
-                  setRoundDurationTotal(minutes * 60 + seconds);
+          {/* Round Duration Input */}
+          <View>
+            <Text style={styles.labelContainer}>Duration</Text>
+            <View style={[styles.timeContainer, {}]}>
+              <View
+                style={{
+                  width: "50%",
+                  backgroundColor: "red",
+                  alignContent: "flex-end",
+                  alignItems: "flex-end",
                 }}
               >
-                {Array.from({ length: 61 }, (_, i) => i).map((num) => (
-                  <Picker.Item
-                    key={num}
-                    label={num.toString()}
-                    value={num.toString()}
-                  />
-                ))}
-              </Picker>
-              <Text style={styles.unit}>minutes</Text>
-              <Picker
-                selectedValue={roundSeconds}
-                style={[styles.input, { height: 50 }]}
-                onValueChange={(itemValue) => {
-                  const seconds = parseInt(itemValue as string) || 0;
-                  const minutes = parseInt(roundMinutes) || 0;
-                  setRoundDurationTotal(minutes * 60 + seconds);
-                }}
-              >
-                {Array.from({ length: 60 }, (_, i) => i).map((num) => (
-                  <Picker.Item
-                    key={num}
-                    label={num.toString()}
-                    value={num.toString()}
-                  />
-                ))}
-              </Picker>
-              <Text style={styles.unit}>seconds</Text>
+                <DropDownPicker
+                  open={open.roundMinutes}
+                  setOpen={() =>
+                    setOpen({ ...open, roundMinutes: !open.roundMinutes })
+                  }
+                  value={roundMinutes}
+                  setValue={(itemValue) => setRoundMinutes(itemValue)}
+                  items={Array.from({ length: 60 }, (_, i) => i).map((num) => ({
+                    label: num.toString(),
+                    value: num.toString(),
+                  }))}
+                  style={[styles.input, {}]}
+                />
+              </View>
+              <View style={{ width: "50%" }}>
+                <DropDownPicker
+                  open={open.roundSeconds}
+                  setOpen={() =>
+                    setOpen({ ...open, roundSeconds: !open.roundSeconds })
+                  }
+                  value={roundSeconds}
+                  setValue={(itemValue) => setRoundSeconds(itemValue)}
+                  items={Array.from({ length: 59 }, (_, i) => i).map((num) => ({
+                    label: num.toString(),
+                    value: num.toString(),
+                  }))}
+                  style={styles.input}
+                />
+              </View>
             </View>
             <Text style={styles.preview}>
               {formatTime(getRoundDurationSeconds() * parseInt(rounds))}
             </Text>
           </View>
-        </View>
-        {/* Rest Duration Input */}
-        <View style={styles.inputGroup}>
-          <View style={styles.labelContainer}>
-            <Text style={styles.label}>Rest</Text>
-            <View style={styles.inputContainer}>
-              <Picker
-                selectedValue={restMinutes}
-                style={[styles.input, { height: 50 }]}
-                onValueChange={(itemValue) => {
-                  const minutes = parseInt(itemValue as string) || 0;
-                  const seconds = parseInt(restSeconds) || 0;
-                  setRestDurationTotal(minutes * 60 + seconds);
-                }}
-              >
-                {Array.from({ length: 61 }, (_, i) => i).map((num) => (
-                  <Picker.Item
-                    key={`rest_${num}`}
-                    label={num.toString()}
-                    value={num.toString()}
-                  />
-                ))}
-              </Picker>
-              <Text style={styles.unit}>Minutes</Text>
-              <Picker
-                selectedValue={restSeconds}
-                style={[styles.input, { height: 50 }]}
-                onValueChange={(itemValue) => {
-                  const seconds = parseInt(itemValue as string) || 0;
-                  const minutes = parseInt(restMinutes) || 0;
-                  setRestDurationTotal(minutes * 60 + seconds);
-                }}
-              >
-                {Array.from({ length: 60 }, (_, i) => i).map((num) => (
-                  <Picker.Item
-                    key={`rest_${num}`}
-                    label={num.toString()}
-                    value={num.toString()}
-                  />
-                ))}
-              </Picker>
-              <Text style={styles.unit}>Seconds</Text>
+
+          {/****** REST Duration Input ******/}
+          <View style={styles.inputGroup}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>Rest</Text>
+              <View style={styles.inputContainer}>
+                <View style={[styles.timeContainer, {}]}>
+                  <View
+                    style={{
+                      width: 100,
+                    }}
+                  >
+                    <DropDownPicker
+                      open={open.restMinutes}
+                      setOpen={() =>
+                        setOpen({ ...open, restMinutes: !open.restMinutes })
+                      }
+                      value={restMinutes}
+                      setValue={(itemValue) => setRestMinutes(itemValue)}
+                      items={Array.from({ length: 60 }, (_, i) => i).map(
+                        (num) => ({
+                          label: num.toString(),
+                          value: num.toString(),
+                        })
+                      )}
+                      style={[styles.input, {}]}
+                    />
+                  </View>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 40,
+                        color: "#FFFFFFFF",
+                        textAlignVertical: "center",
+                      }}
+                    >
+                      {" "}
+                      :{" "}
+                    </Text>
+                  </View>
+                  <View style={{ width: 100 }}>
+                    <DropDownPicker
+                      open={open.restSeconds}
+                      setOpen={() =>
+                        setOpen({ ...open, restSeconds: !open.restSeconds })
+                      }
+                      value={restSeconds}
+                      setValue={(itemValue) => setRestSeconds(itemValue)}
+                      items={Array.from({ length: 59 }, (_, i) => i).map(
+                        (num) => ({
+                          label: num.toString(),
+                          value: num.toString(),
+                        })
+                      )}
+                      style={styles.input}
+                    />
+                  </View>
+                </View>
+              </View>
+              <Text style={styles.preview}>
+                {formatTime((parseInt(rounds) - 1) * getRestDurationSeconds())}
+              </Text>
             </View>
-            <Text style={styles.preview}>
-              {formatTime((parseInt(rounds) - 1) * getRestDurationSeconds())}
+          </View>
+
+          {/* Summary */}
+          <View>
+            {/* TODO: Remove the button styling. this should be a label */}
+            <Text style={styles.summaryTitle}>Total</Text>
+            <Text style={styles.summaryValue}>
+              {formatTime(
+                (parseInt(rounds) || 3) * getRoundDurationSeconds() +
+                  ((parseInt(rounds) || 3) - 1) * getRestDurationSeconds()
+              )}
+            </Text>
+            <Text style={{ color: "rgba(255,255,255,0.9)", marginTop: 8 }}>
+              Projected finish: {projectedStr}
             </Text>
           </View>
-        </View>
-
-        {/* Summary */}
-        <View>
-          {/* TODO: Remove the button styling. this should be a label */}
-          <Text style={styles.summaryTitle}>Total</Text>
-          <Text style={styles.summaryValue}>
-            {formatTime(
-              (parseInt(rounds) || 3) * getRoundDurationSeconds() +
-                ((parseInt(rounds) || 3) - 1) * getRestDurationSeconds()
-            )}
-          </Text>
-          <Text style={{ color: "rgba(255,255,255,0.9)", marginTop: 8 }}>
-            Projected finish: {projectedStr}
-          </Text>
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleStartTimer}>
           <Text style={styles.buttonText}>Start Training</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -247,13 +272,9 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     color: "#fff",
+    top: 36,
   },
   content: {
-    padding: 16,
-  },
-  inputGroup: {
-    marginBottom: 24,
-    borderRadius: 12,
     padding: 16,
   },
   label: {
@@ -263,32 +284,37 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   labelContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    // width: "10%",
-    marginBottom: 8,
-    marginHorizontal: 12,
+    // display: "flex",
+    // flexDirection: "column",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   input: {
-    flex: 1,
+    // flex: 1,
     borderWidth: 2,
     borderColor: "#3953c9ff",
     borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+    // paddingVertical: 10,
     fontSize: 16,
-    marginRight: 12,
-    color: "#333",
+    backgroundColor: "#808287FF",
+    // width: ,
+  },
+  inputContainer: {
+    paddingHorizontal: 15,
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  inputGroup: {
+    marginBottom: 24,
+    borderRadius: 12,
+    padding: 16,
+  },
+  timeContainer: {
+    flexDirection: "row",
   },
   unit: {
     fontSize: 14,
-    color: "#a3a0a0ff",
+    color: "#FFFFFFFF",
     fontWeight: "500",
   },
   preview: {
