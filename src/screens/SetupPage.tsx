@@ -124,15 +124,15 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
           </View>
 
           {/* Round Duration Input */}
-          <View>
-            <Text style={styles.labelContainer}>Duration</Text>
+          <View style={styles.inputGroup}>
+            <View style={styles.labelContainer}>
+            <Text style={styles.label}>Duration</Text>
+            </View>
+            <View style={styles.inputContainer}>
             <View style={[styles.timeContainer, {}]}>
               <View
                 style={{
-                  width: "50%",
-                  backgroundColor: "red",
-                  alignContent: "flex-end",
-                  alignItems: "flex-end",
+                  width: 100,
                 }}
               >
                 <DropDownPicker
@@ -149,7 +149,19 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
                   style={[styles.input, {}]}
                 />
               </View>
-              <View style={{ width: "50%" }}>
+              <View>
+                    <Text
+                      style={{
+                        fontSize: 40,
+                        color: "#FFFFFFFF",
+                        textAlignVertical: "center",
+                      }}
+                    >
+                      {" "}
+                      :{" "}
+                    </Text>
+                  </View>
+              <View style={{ width: 100 }}>
                 <DropDownPicker
                   open={open.roundSeconds}
                   setOpen={() =>
@@ -164,6 +176,7 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
                   style={styles.input}
                 />
               </View>
+            </View>
             </View>
             <Text style={styles.preview}>
               {formatTime(getRoundDurationSeconds() * parseInt(rounds))}
