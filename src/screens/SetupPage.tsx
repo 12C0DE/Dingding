@@ -8,7 +8,6 @@ import {
   TextInput,
 } from "react-native";
 import { useBoxingTimer } from "../context/BoxingTimerContext";
-// import { Picker } from "@react-native-picker/picker";
 import DropDownPicker from "react-native-dropdown-picker";
 
 interface SetupPageProps {
@@ -80,103 +79,94 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const setRoundDurationTotal = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    setRoundMinutes(mins.toString());
-    setRoundSeconds(secs.toString());
-  };
-
-  const setRestDurationTotal = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    setRestMinutes(mins.toString());
-    setRestSeconds(secs.toString());
-  };
-
   return (
-    // <ScrollView style={styles.container}>
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>DING DING</Text>
       </View>
 
       <View style={styles.content}>
-        {/* Rounds Input */}
-        <View style={styles.inputGroup}>
-          <View style={styles.labelContainer}>
+        <View>
+          {/* Rounds Input */}
+          <View style={styles.inputGroup}>
             <Text style={styles.label}>Rounds</Text>
             <View style={styles.inputContainer}>
-              <DropDownPicker
-                open={open.rounds}
-                setOpen={() => setOpen({ ...open, rounds: !open.rounds })}
-                value={rounds}
-                setValue={(itemValue) => setRounds(itemValue)}
-                items={Array.from({ length: 25 }, (_, i) => i + 1).map(
-                  (num) => ({
-                    label: num.toString(),
-                    value: num.toString(),
-                  })
-                )}
-                style={styles.input}
-              />
+              <View>
+                <DropDownPicker
+                  open={open.rounds}
+                  setOpen={() => setOpen({ ...open, rounds: !open.rounds })}
+                  value={rounds}
+                  setValue={(itemValue) => setRounds(itemValue)}
+                  items={Array.from({ length: 25 }, (_, i) => i + 1).map(
+                    (num) => ({
+                      label: num.toString(),
+                      value: num.toString(),
+                    })
+                  )}
+                  style={[styles.input, { zIndex: 1100, width: 240 }]}
+                />
+              </View>
             </View>
           </View>
 
           {/* Round Duration Input */}
-          <View style={styles.inputGroup}>
-            <View style={styles.labelContainer}>
-            <Text style={styles.label}>Duration</Text>
+          <View style={[styles.inputGroup, { zIndex: 1000 }]}>
+            <View>
+              <Text style={styles.label}>Duration</Text>
             </View>
             <View style={styles.inputContainer}>
-            <View style={[styles.timeContainer, {}]}>
-              <View
-                style={{
-                  width: 100,
-                }}
-              >
-                <DropDownPicker
-                  open={open.roundMinutes}
-                  setOpen={() =>
-                    setOpen({ ...open, roundMinutes: !open.roundMinutes })
-                  }
-                  value={roundMinutes}
-                  setValue={(itemValue) => setRoundMinutes(itemValue)}
-                  items={Array.from({ length: 60 }, (_, i) => i).map((num) => ({
-                    label: num.toString(),
-                    value: num.toString(),
-                  }))}
-                  style={[styles.input, {}]}
-                />
+              <View style={[styles.timeContainer, {}]}>
+                <View
+                  style={{
+                    width: 100,
+                  }}
+                >
+                  <DropDownPicker
+                    open={open.roundMinutes}
+                    setOpen={() =>
+                      setOpen({ ...open, roundMinutes: !open.roundMinutes })
+                    }
+                    value={roundMinutes}
+                    setValue={(itemValue) => setRoundMinutes(itemValue)}
+                    items={Array.from({ length: 60 }, (_, i) => i).map(
+                      (num) => ({
+                        label: num.toString(),
+                        value: num.toString(),
+                      })
+                    )}
+                    style={[styles.input, { zIndex: 1050 }]}
+                  />
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 40,
+                      color: "#FFFFFFFF",
+                      textAlignVertical: "center",
+                    }}
+                  >
+                    {" "}
+                    :{" "}
+                  </Text>
+                </View>
+                <View style={{ width: 100 }}>
+                  <DropDownPicker
+                    open={open.roundSeconds}
+                    setOpen={() =>
+                      setOpen({ ...open, roundSeconds: !open.roundSeconds })
+                    }
+                    value={roundSeconds}
+                    setValue={(itemValue) => setRoundSeconds(itemValue)}
+                    items={Array.from({ length: 59 }, (_, i) => i).map(
+                      (num) => ({
+                        label: num.toString(),
+                        value: num.toString(),
+                      })
+                    )}
+                    style={[styles.input, { zIndex: 1049 }]}
+                  />
+                </View>
               </View>
-              <View>
-                    <Text
-                      style={{
-                        fontSize: 40,
-                        color: "#FFFFFFFF",
-                        textAlignVertical: "center",
-                      }}
-                    >
-                      {" "}
-                      :{" "}
-                    </Text>
-                  </View>
-              <View style={{ width: 100 }}>
-                <DropDownPicker
-                  open={open.roundSeconds}
-                  setOpen={() =>
-                    setOpen({ ...open, roundSeconds: !open.roundSeconds })
-                  }
-                  value={roundSeconds}
-                  setValue={(itemValue) => setRoundSeconds(itemValue)}
-                  items={Array.from({ length: 59 }, (_, i) => i).map((num) => ({
-                    label: num.toString(),
-                    value: num.toString(),
-                  }))}
-                  style={styles.input}
-                />
-              </View>
-            </View>
             </View>
             <Text style={styles.preview}>
               {formatTime(getRoundDurationSeconds() * parseInt(rounds))}
@@ -184,85 +174,87 @@ export const SetupPage: React.FC<SetupPageProps> = ({ onNavigateToTimer }) => {
           </View>
 
           {/****** REST Duration Input ******/}
-          <View style={styles.inputGroup}>
-            <View style={styles.labelContainer}>
-              <Text style={styles.label}>Rest</Text>
-              <View style={styles.inputContainer}>
-                <View style={[styles.timeContainer, {}]}>
-                  <View
+          <View style={[styles.inputGroup, { zIndex: 900 }]}>
+            <Text style={styles.label}>Rest</Text>
+            <View style={styles.inputContainer}>
+              <View style={styles.timeContainer}>
+                <View
+                  style={{
+                    width: 100,
+                  }}
+                >
+                  <DropDownPicker
+                    open={open.restMinutes}
+                    setOpen={() =>
+                      setOpen({ ...open, restMinutes: !open.restMinutes })
+                    }
+                    value={restMinutes}
+                    setValue={(itemValue) => setRestMinutes(itemValue)}
+                    items={Array.from({ length: 60 }, (_, i) => i).map(
+                      (num) => ({
+                        label: num.toString(),
+                        value: num.toString(),
+                      })
+                    )}
+                    style={[styles.input, { zIndex: 950 }]}
+                  />
+                </View>
+                <View>
+                  <Text
                     style={{
-                      width: 100,
+                      fontSize: 40,
+                      color: "#FFFFFFFF",
+                      textAlignVertical: "center",
                     }}
                   >
-                    <DropDownPicker
-                      open={open.restMinutes}
-                      setOpen={() =>
-                        setOpen({ ...open, restMinutes: !open.restMinutes })
-                      }
-                      value={restMinutes}
-                      setValue={(itemValue) => setRestMinutes(itemValue)}
-                      items={Array.from({ length: 60 }, (_, i) => i).map(
-                        (num) => ({
-                          label: num.toString(),
-                          value: num.toString(),
-                        })
-                      )}
-                      style={[styles.input, {}]}
-                    />
-                  </View>
-                  <View>
-                    <Text
-                      style={{
-                        fontSize: 40,
-                        color: "#FFFFFFFF",
-                        textAlignVertical: "center",
-                      }}
-                    >
-                      {" "}
-                      :{" "}
-                    </Text>
-                  </View>
-                  <View style={{ width: 100 }}>
-                    <DropDownPicker
-                      open={open.restSeconds}
-                      setOpen={() =>
-                        setOpen({ ...open, restSeconds: !open.restSeconds })
-                      }
-                      value={restSeconds}
-                      setValue={(itemValue) => setRestSeconds(itemValue)}
-                      items={Array.from({ length: 59 }, (_, i) => i).map(
-                        (num) => ({
-                          label: num.toString(),
-                          value: num.toString(),
-                        })
-                      )}
-                      style={styles.input}
-                    />
-                  </View>
+                    {" "}
+                    :{" "}
+                  </Text>
+                </View>
+                <View style={{ width: 100 }}>
+                  <DropDownPicker
+                    open={open.restSeconds}
+                    setOpen={() =>
+                      setOpen({ ...open, restSeconds: !open.restSeconds })
+                    }
+                    value={restSeconds}
+                    setValue={(itemValue) => setRestSeconds(itemValue)}
+                    items={Array.from({ length: 59 }, (_, i) => i).map(
+                      (num) => ({
+                        label: num.toString(),
+                        value: num.toString(),
+                      })
+                    )}
+                    style={[styles.input, { zIndex: 949 }]}
+                  />
                 </View>
               </View>
-              <Text style={styles.preview}>
-                {formatTime((parseInt(rounds) - 1) * getRestDurationSeconds())}
+            </View>
+            <Text style={styles.preview}>
+              {formatTime((parseInt(rounds) - 1) * getRestDurationSeconds())}
+            </Text>
+
+            {/* Summary */}
+            <View>
+              <Text style={styles.summaryTitle}>Total</Text>
+              <Text style={styles.summaryValue}>
+                {formatTime(
+                  (parseInt(rounds) || 3) * getRoundDurationSeconds() +
+                    ((parseInt(rounds) || 3) - 1) * getRestDurationSeconds()
+                )}
+              </Text>
+              <Text
+                style={{
+                  color: "rgba(255,255,255,0.9)",
+                  marginTop: 8,
+                  textAlign: "right",
+                }}
+              >
+                Projected finish: {projectedStr}
               </Text>
             </View>
           </View>
-
-          {/* Summary */}
-          <View>
-            {/* TODO: Remove the button styling. this should be a label */}
-            <Text style={styles.summaryTitle}>Total</Text>
-            <Text style={styles.summaryValue}>
-              {formatTime(
-                (parseInt(rounds) || 3) * getRoundDurationSeconds() +
-                  ((parseInt(rounds) || 3) - 1) * getRestDurationSeconds()
-              )}
-            </Text>
-            <Text style={{ color: "rgba(255,255,255,0.9)", marginTop: 8 }}>
-              Projected finish: {projectedStr}
-            </Text>
-          </View>
         </View>
-
         <TouchableOpacity style={styles.button} onPress={handleStartTimer}>
           <Text style={styles.buttonText}>Start Training</Text>
         </TouchableOpacity>
@@ -289,6 +281,10 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    flex: 1,
   },
   label: {
     fontSize: 16,
@@ -296,21 +292,12 @@ const styles = StyleSheet.create({
     color: "#f9f8f8ff",
     marginBottom: 12,
   },
-  labelContainer: {
-    // display: "flex",
-    // flexDirection: "column",
-    // alignItems: "center",
-    // justifyContent: "center",
-  },
   input: {
-    // flex: 1,
     borderWidth: 2,
     borderColor: "#3953c9ff",
     borderRadius: 8,
-    // paddingVertical: 10,
     fontSize: 16,
-    backgroundColor: "#808287FF",
-    // width: ,
+    width: 100,
   },
   inputContainer: {
     paddingHorizontal: 15,
@@ -335,6 +322,7 @@ const styles = StyleSheet.create({
     color: "#3953c9ff",
     fontWeight: "600",
     marginTop: 8,
+    textAlign: "right",
   },
   summary: {
     backgroundColor: "#3953c9ff",
@@ -344,18 +332,21 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   summaryTitle: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: "800",
     color: "rgba(255, 255, 255, 0.88)",
     marginBottom: 8,
+    marginTop: 16,
   },
   summaryValue: {
-    fontSize: 32,
-    fontWeight: "bold",
+    fontSize: 48,
+    fontWeight: "800",
     color: "#fff",
+    textAlign: "center",
   },
   button: {
     marginHorizontal: 16,
-    marginBottom: 32,
+    marginBottom: 48,
     backgroundColor: "#3953c9ff",
     borderRadius: 12,
     paddingVertical: 16,
